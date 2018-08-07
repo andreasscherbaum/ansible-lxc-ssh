@@ -608,7 +608,7 @@ class Connection(ConnectionBase):
         # only when using ssh. Otherwise we can send initial data straightaway.
 
         state = states.index('ready_to_send')
-        if b'ssh' in cmd:
+        if b'ssh' in cmd and self.lxc_version != 2:
             if self._play_context.prompt:
                 # We're requesting escalation with a password, so we have to
                 # wait for a password prompt.
