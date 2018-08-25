@@ -148,18 +148,18 @@ class Connection(ConnectionBase):
             self.user = self._play_context.remote_user
             self.control_path = C.ANSIBLE_SSH_CONTROL_PATH
             self.control_path_dir = C.ANSIBLE_SSH_CONTROL_PATH_DIR
-        self.lxc_version = None
+        self.lxc_single_command = None
 
-        # LXC v1 uses 'lxc-info', 'lxc-attach' and so on
-        # LXC v2 uses just 'lxc'
+        # On some systems LXC uses 'lxc-info', 'lxc-attach' and so on
+        # on other systems just 'lxc'
         (returncode2, stdout2, stderr2) = self._exec_command("which lxc", None, False)
         (returncode1, stdout1, stderr1) = self._exec_command("which lxc-info", None, False)
         if (returncode2 == 0):
-            self.lxc_version = 2
-            display.vvv('LXC v2')
+            self.lxc_single_command = True
+            display.vvv('LXC single command mode')
         elif (returncode1 == 0):
-            self.lxc_version = 1
-            display.vvv('LXC v1')
+            self.lxc_single_command = False
+            display.vvv('LXC multi command mode')
         else:
             raise AnsibleConnectionFailure('Cannot identify LXC version')
             sys.exit(1)
@@ -1123,11 +1123,11 @@ class Connection(ConnectionBase):
         #print( vm )
         #raise "blah"
         h = self.container_name
-        if (self.lxc_version == 2):
+        if (self.lxc_single_command):
             lxc_cmd = 'lxc exec %s --mode=non-interactive -- /bin/sh -c %s'  \
                     % (pipes.quote(h),
                        pipes.quote(cmd))
-        elif (self.lxc_version == 1):
+        else:
             lxc_cmd = 'lxc-attach --name %s -- /bin/sh -c %s'  \
                     % (pipes.quote(h),
                        pipes.quote(cmd))
@@ -1166,11 +1166,11 @@ class Connection(ConnectionBase):
             in_data = in_f.read()
             cmd = ('cat > %s; echo -n done' % pipes.quote(out_path))
             h = self.container_name
-            if (self.lxc_version == 2):
+            if (self.lxc_single_command):
                 lxc_cmd = 'lxc exec %s --mode=non-interactive -- /bin/sh -c %s'  \
                         % (pipes.quote(h),
                            pipes.quote(cmd))
-            elif (self.lxc_version == 1):
+            else:
                 lxc_cmd = 'lxc-attach --name %s -- /bin/sh -c %s'  \
                         % (pipes.quote(h),
                            pipes.quote(cmd))
@@ -1203,11 +1203,11 @@ class Connection(ConnectionBase):
         if LooseVersion(ansible_version) >= LooseVersion('2.3.0.0'):
             cmd = ('cat < %s' % pipes.quote(in_path))
         h = self.container_name
-        if (self.lxc_version == 2):
+        if (self.lxc_single_command):
             lxc_cmd = 'lxc exec %s --mode=non-interactive -- /bin/sh -c %s'  \
                     % (pipes.quote(h),
                        pipes.quote(cmd))
-        elif (self.lxc_version == 1):
+        else:
             lxc_cmd = 'lxc-attach --name %s -- /bin/sh -c %s'  \
                     % (pipes.quote(h),
                        pipes.quote(cmd))
