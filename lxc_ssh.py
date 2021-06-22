@@ -523,6 +523,19 @@ class Connection(ConnectionBase):
         self.control_path = None
         self.control_path_dir = None
 
+    def _set_command_prefix(self):
+        # check for cgroupv2 and use systemd-run to run the commands if needed
+        (returncode_cgroup, stdout_cgroup, stderr_cgroup) = self._exec_command(
+            "stat /sys/fs/cgroup/cgroup.controllers", None, False
+        )
+        cgroup2 = returncode_cgroup == 0
+        if cgroup2:
+            self.systemd_run_prefix = (
+                'systemd-run --quiet --user --scope --property="Delegate=yes" -- '
+            )
+        else:
+            self.systemd_run_prefix = ""
+
     def _set_version(self):
         # LXC v1 uses 'lxc-info', 'lxc-attach' and so on
         # LXC v2 uses just 'lxc'
@@ -543,6 +556,7 @@ class Connection(ConnectionBase):
     def set_options(self, *args, **kwargs):
         super(Connection, self).set_options(*args, **kwargs)
         self._set_version()
+        self._set_command_prefix()
 
     # The connection is created by running ssh/scp/sftp from the exec_command,
     # put_file, and fetch_file methods, so we don't need to do any connection
@@ -1342,12 +1356,14 @@ class Connection(ConnectionBase):
         ssh_executable = self.get_option("ssh_executable")
         h = self.container_name
         if self.lxc_version == 2:
-            lxc_cmd = "lxc exec %s --mode=non-interactive -- /bin/sh -c %s" % (
+            lxc_cmd = "%slxc exec %s --mode=non-interactive -- /bin/sh -c %s" % (
+                self.systemd_run_prefix,
                 pipes.quote(h),
                 pipes.quote(cmd),
             )
         elif self.lxc_version == 1:
-            lxc_cmd = "lxc-attach --name %s -- /bin/sh -c %s" % (
+            lxc_cmd = "%slxc-attach --name %s -- /bin/sh -c %s" % (
+                self.systemd_run_prefix,
                 pipes.quote(h),
                 pipes.quote(cmd),
             )
@@ -1381,12 +1397,14 @@ class Connection(ConnectionBase):
                     cmd = "cat > %s; echo -n done" % pipes.quote(out_path)
                 h = self.container_name
                 if self.lxc_version == 2:
-                    lxc_cmd = "lxc exec %s --mode=non-interactive -- /bin/sh -c %s" % (
+                    lxc_cmd = "%slxc exec %s --mode=non-interactive -- /bin/sh -c %s" % (
+                        self.systemd_run_prefix,
                         pipes.quote(h),
                         pipes.quote(cmd),
                     )
                 elif self.lxc_version == 1:
-                    lxc_cmd = "lxc-attach --name %s -- /bin/sh -c %s" % (
+                    lxc_cmd = "%slxc-attach --name %s -- /bin/sh -c %s" % (
+                        self.systemd_run_prefix,
                         pipes.quote(h),
                         pipes.quote(cmd),
                     )
@@ -1410,12 +1428,14 @@ class Connection(ConnectionBase):
                     cmd = "cat > %s; echo -n done" % pipes.quote(out_path)
                 h = self.container_name
                 if self.lxc_version == 2:
-                    lxc_cmd = "lxc exec %s --mode=non-interactive -- /bin/sh -c %s" % (
+                    lxc_cmd = "%slxc exec %s --mode=non-interactive -- /bin/sh -c %s" % (
+                        self.systemd_run_prefix,
                         pipes.quote(h),
                         pipes.quote(cmd),
                     )
                 elif self.lxc_version == 1:
-                    lxc_cmd = "lxc-attach --name %s -- /bin/sh -c %s" % (
+                    lxc_cmd = "%slxc-attach --name %s -- /bin/sh -c %s" % (
+                        self.systemd_run_prefix,
                         pipes.quote(h),
                         pipes.quote(cmd),
                     )
@@ -1437,12 +1457,14 @@ class Connection(ConnectionBase):
         cmd = "cat < %s" % pipes.quote(in_path)
         h = self.container_name
         if self.lxc_version == 2:
-            lxc_cmd = "lxc exec %s --mode=non-interactive -- /bin/sh -c %s" % (
+            lxc_cmd = "%slxc exec %s --mode=non-interactive -- /bin/sh -c %s" % (
+                self.systemd_run_prefix,
                 pipes.quote(h),
                 pipes.quote(cmd),
             )
         elif self.lxc_version == 1:
-            lxc_cmd = "lxc-attach --name %s -- /bin/sh -c %s" % (
+            lxc_cmd = "%slxc-attach --name %s -- /bin/sh -c %s" % (
+                self.systemd_run_prefix,
                 pipes.quote(h),
                 pipes.quote(cmd),
             )
