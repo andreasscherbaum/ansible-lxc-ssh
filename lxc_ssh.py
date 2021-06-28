@@ -509,6 +509,9 @@ def _ssh_retry(func):
     return wrapped
 
 
+SSHPASS_AVAILABLE = None
+
+
 class Connection(ConnectionBase):
     """ssh+lxc_attach connection"""
 
@@ -565,6 +568,29 @@ class Connection(ConnectionBase):
         display.vvv("XXX connect")
         super(Connection, self)._connect()
         self.container_name = str(self.get_option("lxc_host"))
+
+    @staticmethod
+    def _sshpass_available():
+        global SSHPASS_AVAILABLE
+
+        # We test once if sshpass is available, and remember the result. It
+        # would be nice to use distutils.spawn.find_executable for this, but
+        # distutils isn't always available; shutils.which() is Python3-only.
+
+        if SSHPASS_AVAILABLE is None:
+            try:
+                p = subprocess.Popen(
+                    ["sshpass"],
+                    stdin=subprocess.PIPE,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
+                p.communicate()
+                SSHPASS_AVAILABLE = True
+            except OSError:
+                SSHPASS_AVAILABLE = False
+
+        return SSHPASS_AVAILABLE
 
     @staticmethod
     def _create_control_path(host, port, user, connection=None):
