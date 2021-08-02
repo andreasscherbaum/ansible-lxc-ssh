@@ -1,0 +1,15 @@
+---
+authors:
+  - TODO
+dependencies:
+  "ansible.netcommon": ">=2.0.1"
+license_file: LICENSE
+name: lxc_ssh
+namespace: ansible
+description: Ansible Network Collection for LXC containers and hosts
+readme: README.md
+repository: https://github.com/my_org/my_collection"
+tags: [lxc, lxd, networking]
+# NOTE(pabelanger): We create an empty version key to keep ansible-galaxy
+# happy. We dynamically inject version info based on git information.
+version: null
