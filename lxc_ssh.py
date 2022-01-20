@@ -565,7 +565,7 @@ class Connection(ConnectionBase):
         """connect to the lxc; nothing to do here"""
         display.vvv("XXX connect")
         super(Connection, self)._connect()
-        self.container_name = self.get_option("lxc_host")
+        self.container_name = str(self.get_option("lxc_host"))
 
     @staticmethod
     def _create_control_path(host, port, user, connection=None):
