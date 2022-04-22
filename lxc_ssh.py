@@ -482,7 +482,7 @@ def _ssh_retry(func):
                 if attempt == remaining_tries - 1:
                     raise
                 else:
-                    pause = 2 ** attempt - 1
+                    pause = 2**attempt - 1
                     if pause > 30:
                         pause = 30
 
@@ -738,7 +738,7 @@ class Connection(ConnectionBase):
                 to_bytes(a, errors="surrogate_or_strict")
                 for a in self._split_ssh_args(ssh_args)
             ]
-            self._add_args(b_command, b_args, u"ansible.cfg set ssh_args")
+            self._add_args(b_command, b_args, "ansible.cfg set ssh_args")
 
         # Now we add various arguments that have their own specific settings
         # defined in docs above.
