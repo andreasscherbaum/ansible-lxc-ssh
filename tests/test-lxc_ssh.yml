@@ -35,8 +35,10 @@
         filename: "test_50mb"
 
     - name: Test command
+      tags: [short]
       include_tasks:
         file: "test-command.yml"
+        apply: { tags: [short] }
       vars:
         expect_user: "root"
 

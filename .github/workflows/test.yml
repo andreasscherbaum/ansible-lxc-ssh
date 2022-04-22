@@ -202,6 +202,17 @@ jobs:
         run: sudo lxc exec test-container -- chown -R ubuntu. /home/ubuntu/.ssh
 
 
+      # configure password & other requirements for password authentication
+      - name: Set root user password in container
+        run: sudo lxc exec test-container -- sh -c 'printf "password\npassword\n" | passwd'
+
+      - name: Set ubuntu user password in container
+        run: sudo lxc exec test-container -- sh -c 'printf "password\npassword\n" | passwd ubuntu'
+
+      - name: Install sshpass on runner
+        run: sudo apt-get -y install sshpass
+
+
       # update known_hosts for root
       - name: Create /root/.ssh/known_hosts
         run: sudo touch /root/.ssh/known_hosts
@@ -236,6 +247,9 @@ jobs:
 
       - name: Test ssh connection from runner into ubuntu user
         run: ssh -i $HOME/.ssh/id_ed25519 -o PreferredAuthentications=publickey -o PasswordAuthentication=no -l ubuntu ${{ steps.test_container_ipv4.outputs.IPv4 }} uptime
+
+      - name: Test ssh connection into root user with password authentication
+        run: sshpass -p 'password' ssh -i /dev/null -l ubuntu ${{ steps.test_container_ipv4.outputs.IPv4 }} uptime
 
 
       # copy logfiles from container into log
@@ -325,3 +339,23 @@ jobs:
 
       - name: Run test
         run: ANSIBLE_CONFIG=$GITHUB_WORKSPACE/tests/ cd tests && ansible-playbook -i $GITHUB_WORKSPACE/tests/inventory.yml $GITHUB_WORKSPACE/tests/test-lxc_ssh.yml
+
+      # Test password authentication
+      - name: Add a password for the SSH connection
+        run: >
+          printf '      ansible_ssh_pass: "password"\n      ansible_ssh_private_key_file: "/dev/null"' >> $GITHUB_WORKSPACE/tests/inventory.yml
+
+      - name: Run test with password
+        run: >
+          ANSIBLE_CONFIG=$GITHUB_WORKSPACE/tests/ cd tests && ansible-playbook -i $GITHUB_WORKSPACE/tests/inventory.yml $GITHUB_WORKSPACE/tests/test-lxc_ssh.yml -t short
+
+      - name: Remove sshpass
+        run: sudo apt-get remove -y sshpass
+
+      - name: Run test with password and without sshpass (expect command failure)
+        run: >
+          set +e;
+          stdout=$(ANSIBLE_CONFIG=$GITHUB_WORKSPACE/tests/ cd tests && ansible-playbook -i $GITHUB_WORKSPACE/tests/inventory.yml $GITHUB_WORKSPACE/tests/test-lxc_ssh.yml -t short);
+          status=$?;
+          set -e;
+          [ $status -eq 2 ] && echo "$stdout" | grep -F "to use the 'ssh' connection type with passwords,  you must install the sshpass program"
