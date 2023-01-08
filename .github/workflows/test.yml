@@ -26,15 +26,32 @@ jobs:
       fail-fast: false
       matrix:
         # also test 'latest', eventually this will be upgraded to a newer version and might fail early
-        os: [ubuntu-20.04, ubuntu-22.04, ubuntu-latest]
-        ansible: ["stable-2.9", "stable-2.10", "stable-2.11", "stable-2.12", "stable-2.13", "stable-2.14"]
+        #os: [ubuntu-20.04, ubuntu-22.04, ubuntu-latest]
+        #ansible: ["stable-2.9", "stable-2.10", "stable-2.11", "stable-2.12", "stable-2.13", "stable-2.14"]
         include:
           - os: ubuntu-20.04
             guest: 20.04
             guest-image: 20.04/amd64
-          - os: ubuntu-latest
+            ansible: "stable-2.9"
+          - os: ubuntu-20.04
             guest: 20.04
             guest-image: 20.04/amd64
+            ansible: "stable-2.10"
+          - os: ubuntu-20.04
+            guest: 20.04
+            guest-image: 20.04/amd64
+            ansible: "stable-2.11"
+          - os: ubuntu-20.04
+            guest: 20.04
+            guest-image: 20.04/amd64
+            ansible: "stable-2.12"
+          - os: ubuntu-20.04
+            guest: 20.04
+            guest-image: 20.04/amd64
+            ansible: "stable-2.13"
+#          - os: ubuntu-latest
+#            guest: 20.04
+#            guest-image: 20.04/amd64
           - os: ubuntu-latest
             ansible: "devel"
 
