@@ -370,6 +370,9 @@ jobs:
       #- name: apt-get dist-upgrade
       #  run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- apt-get dist-upgrade -y
 
+      - name: Ubuntu version
+        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- lsb_release -a
+
       - name: Python3
         run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- apt-get -y install -y python3
 
