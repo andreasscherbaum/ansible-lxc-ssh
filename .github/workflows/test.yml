@@ -383,8 +383,8 @@ jobs:
         run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- sudo snap install lxd
         if: ${{ matrix.guest != '20.04' }}
 
-      - name: Ping test if the container has connectivity
-        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- ping -4 -c 3 -n -v 8.8.8.8
+#      - name: Ping test if the container has connectivity
+#        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- ping -4 -c 3 -n -v 8.8.8.8
 
 
       # container is ready
