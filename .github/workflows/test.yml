@@ -390,6 +390,14 @@ jobs:
         if: ${{ matrix.guest != '20.04' }}
 
       - name: Install LXD inside container (>= 22.04)
+        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- sudo apt-cache search lxc
+        if: ${{ matrix.guest != '20.04' }}
+
+      - name: Install LXD inside container (>= 22.04)
+        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- sudo apt-get -y install snapd
+        if: ${{ matrix.guest != '20.04' }}
+
+      - name: Install LXD inside container (>= 22.04)
         run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- sudo snap install lxd
         if: ${{ matrix.guest != '20.04' }}
 
