@@ -64,8 +64,10 @@ jobs:
             guest: 22.04
             ansible: "stable-2.14"
           - os: ubuntu-latest
+            guest: 22.04
             ansible: "stable-2.14"
 #          - os: ubuntu-latest
+#            guest: 22.04
 #            ansible: "devel"
 
     steps:
