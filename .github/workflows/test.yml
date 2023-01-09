@@ -159,6 +159,16 @@ jobs:
       - name: Docker
         run: sudo docker ps
 
+      # https://linuxcontainers.org/lxd/docs/master/howto/network_bridge_firewalld/#prevent-issues-with-lxd-and-docker
+      - name: Network
+        run: sudo ip addr
+
+      - name: Docker Firewall 1
+        run: sudo iptables -I DOCKER-USER -i lxdbr0 -o eth0 -j ACCEPT
+
+      - name: Docker Firewall 2
+        run: sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
 
       # create an actual container, and configure it
       # Enable container nesting
