@@ -84,11 +84,11 @@ jobs:
       # prepare container with LXD installation
       - name: Install LXD (Ubuntu 20.x)
         run: sudo apt-get install -y lxd lxd-client lxd-tools iptables
-        if: ${{ matrix.guest }} == "20.04"
+        if: matrix.guest == "20.04"
 
       - name: Install LXD (Ubuntu >= 22.x)
         run: sudo apt-get install -y lxd-tools iptables
-        if: ${{ matrix.guest }} != "20.04"
+        if: matrix.guest != "20.04"
 
 
       # different LXD versions need different init steps
