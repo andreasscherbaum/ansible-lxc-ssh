@@ -32,40 +32,40 @@ jobs:
         #os: [ubuntu-20.04, ubuntu-22.04, ubuntu-latest]
         #ansible: ["stable-2.9", "stable-2.10", "stable-2.11", "stable-2.12", "stable-2.13", "stable-2.14"]
         include:
-#          - os: ubuntu-20.04
-#            guest: 20.04
-#            #guest-image: 20.04/amd64
-#            ansible: "stable-2.9"
-#          - os: ubuntu-20.04
-#            guest: 20.04
-#            ansible: "stable-2.10"
-#          - os: ubuntu-20.04
-#            guest: 20.04
-#            ansible: "stable-2.11"
-#          - os: ubuntu-20.04
-#            guest: 20.04
-#            ansible: "stable-2.12"
-#          - os: ubuntu-20.04
-#            guest: 20.04
-#            ansible: "stable-2.13"
-#          - os: ubuntu-22.04
-#            guest: 22.04
-#            ansible: "stable-2.9"
-#          - os: ubuntu-22.04
-#            guest: 22.04
-#            ansible: "stable-2.10"
-#          - os: ubuntu-22.04
-#            guest: 22.04
-#            ansible: "stable-2.11"
-#          - os: ubuntu-22.04
-#            guest: 22.04
-#            ansible: "stable-2.12"
-#          - os: ubuntu-22.04
-#            guest: 22.04
-#            ansible: "stable-2.13"
-#          - os: ubuntu-22.04
-#            guest: 22.04
-#            ansible: "stable-2.14"
+          - os: ubuntu-20.04
+            guest: 20.04
+            #guest-image: 20.04/amd64
+            ansible: "stable-2.9"
+          - os: ubuntu-20.04
+            guest: 20.04
+            ansible: "stable-2.10"
+          - os: ubuntu-20.04
+            guest: 20.04
+            ansible: "stable-2.11"
+          - os: ubuntu-20.04
+            guest: 20.04
+            ansible: "stable-2.12"
+          - os: ubuntu-20.04
+            guest: 20.04
+            ansible: "stable-2.13"
+          - os: ubuntu-22.04
+            guest: 22.04
+            ansible: "stable-2.9"
+          - os: ubuntu-22.04
+            guest: 22.04
+            ansible: "stable-2.10"
+          - os: ubuntu-22.04
+            guest: 22.04
+            ansible: "stable-2.11"
+          - os: ubuntu-22.04
+            guest: 22.04
+            ansible: "stable-2.12"
+          - os: ubuntu-22.04
+            guest: 22.04
+            ansible: "stable-2.13"
+          - os: ubuntu-22.04
+            guest: 22.04
+            ansible: "stable-2.14"
           # build the latest known stable Ansible on the latest known stable Ubuntu
           - os: ubuntu-latest
             guest: 22.04
@@ -77,7 +77,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
 
       # check Python syntax
