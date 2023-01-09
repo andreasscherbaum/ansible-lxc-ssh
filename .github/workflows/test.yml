@@ -210,20 +210,21 @@ jobs:
         run: ssh-keygen -t ed25519 -f $HOME/.ssh/id_ed25519 -v -N "" -P "" -C "home/runner@host"
 
 
-      # install OpenSSH in container
+      # 22.04 can't reach the Ubuntu servers over IPv6
+      - name: Disable IPv6 (all)
+        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- sysctl -w net.ipv6.conf.all.disable_ipv6=1
+
+      - name: Disable IPv6 (default)
+        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- sysctl -w net.ipv6.conf.default.disable_ipv6=1
+
+      - name: Disable IPv6 (lo)
+        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- sysctl -w net.ipv6.conf.lo.disable_ipv6=1
+
       # https://unix.stackexchange.com/questions/604047/cannot-initiate-the-connection-to-archive-ubuntu-com80-200167c1360800124
-      - name: Force IPv4
-        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- ls -ld /etc/apt/apt.conf.d/
-
-      - name: Force IPv4
-        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- touch /etc/apt/apt.conf.d/99only-ipv4
-
-      - name: Force IPv4
-        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- ls -ld /etc/apt/apt.conf.d/99only-ipv4
-
       - name: Force IPv4
         run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- echo 'Acquire::ForceIPv4 "true";' | sudo tee /etc/apt/apt.conf.d/99only-ipv4
 
+      # install OpenSSH in container
       - name: Install OpenSSH in container
         run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- apt-get -y install -y openssh-client openssh-server openssh-sftp-server
 
