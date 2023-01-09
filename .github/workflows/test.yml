@@ -95,11 +95,11 @@ jobs:
 
       # different LXD versions need different init steps
       - name: Store LXD version
-        run: echo "::set-output name=LXD_Version::$(lxd --version)"
+        run: echo "LXD_Version=$(lxd --version)" >> $GITHUB_OUTPUT
         id: lxd_version
 
       - name: Store LXD major version
-        run: echo "::set-output name=LXD_Major_Version::$(lxd --version | cut -f1 -d'.')"
+        run: echo "LXD_Major_Version=$(lxd --version | cut -f1 -d'.')" >> $GITHUB_OUTPUT
         id: lxd__major_version
 
       - name: Output version
