@@ -19,6 +19,7 @@ profiles:
     eth0:
       name: eth0
       network: lxdbr0
+      nictype: bridged
       type: nic
     root:
       path: /
