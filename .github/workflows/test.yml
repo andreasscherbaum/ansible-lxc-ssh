@@ -233,8 +233,8 @@ jobs:
       - name: Network
         run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- ip route
 
-      - name: Ping
-        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- ping -c 5 8.8.8.8
+#      - name: Ping
+#        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- ping -c 5 8.8.8.8
 
       # https://unix.stackexchange.com/questions/604047/cannot-initiate-the-connection-to-archive-ubuntu-com80-200167c1360800124
       - name: Force IPv4
