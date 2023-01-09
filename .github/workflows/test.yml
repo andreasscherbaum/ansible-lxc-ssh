@@ -220,6 +220,12 @@ jobs:
       - name: Disable IPv6 (lo)
         run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- sysctl -w net.ipv6.conf.lo.disable_ipv6=1
 
+      - name: Network
+        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- ip addr
+
+      - name: Network
+        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- ip route
+
       # https://unix.stackexchange.com/questions/604047/cannot-initiate-the-connection-to-archive-ubuntu-com80-200167c1360800124
       - name: Force IPv4
         run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- echo 'Acquire::ForceIPv4 "true";' | sudo tee /etc/apt/apt.conf.d/99only-ipv4
