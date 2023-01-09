@@ -156,6 +156,9 @@ jobs:
       - name: Firewall 3
         run: sudo ufw route allow out on lxdbr0
 
+      - name: Docker
+        run: sudo docker ls
+
 
       # create an actual container, and configure it
       # Enable container nesting
