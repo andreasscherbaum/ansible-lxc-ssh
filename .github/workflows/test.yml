@@ -216,6 +216,9 @@ jobs:
         run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- ls -ld /etc/apt/apt.conf.d/
 
       - name: Force IPv4
+        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- touch /etc/apt/apt.conf.d/99only-ipv4
+
+      - name: Force IPv4
         run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- echo 'Acquire::ForceIPv4 "true";' > /etc/apt/apt.conf.d/99only-ipv4
 
       - name: Install OpenSSH in container
