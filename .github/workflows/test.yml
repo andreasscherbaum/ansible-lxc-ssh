@@ -95,11 +95,11 @@ jobs:
 
       # different LXD versions need different init steps
       - name: Store LXD version
-        run: echo "{name}={LXD_Version::$(lxd --version)}" >> $GITHUB_OUTPUT
+        run: echo "::set-output name=LXD_Version::$(lxd --version)"
         id: lxd_version
 
       - name: Store LXD major version
-        run: echo "{name}={LXD_Major_Version::$(lxd --version | cut -f1 -d'.')}" >> $GITHUB_OUTPUT
+        run: echo "::set-output name=LXD_Major_Version::$(lxd --version | cut -f1 -d'.')"
         id: lxd__major_version
 
       - name: Output version
@@ -125,7 +125,7 @@ jobs:
         run: sudo lxc profile show default
 
       - name: Store IPv4 address for lxdbr0
-        run: echo "name=IP::$(ip -4 addr show lxdbr0 | grep inet | awk '{print $2}' | cut -d/ -f1)" >> $GITHUB_OUTPUT
+        run: echo "::set-output name=IP::$(ip -4 addr show lxdbr0 | grep inet | awk '{print $2}' | cut -d/ -f1)"
         id: lxdbr0_ipv4
 
       - name: Show lxdbr0 IP address
@@ -185,14 +185,14 @@ jobs:
         run: sudo lxc exec test-container -- ip -4 -o link show
 
       - name: Store Container interface name
-        run: echo "name=IF::$(sudo lxc exec test-container -- ip -4 -o link show | awk '{print $2}' | cut -f1 -d':' | cut -f1 -d'@' | grep '^e[tn]')" >> $GITHUB_OUTPUT
+        run: echo "::set-output name=IF::$(sudo lxc exec test-container -- ip -4 -o link show | awk '{print $2}' | cut -f1 -d':' | cut -f1 -d'@' | grep '^e[tn]')"
         id: test_container_interface
 
       - name: Request and wait for IPv4 address
         run: sudo lxc exec test-container -- dhclient -v ${{ steps.test_container_interface.outputs.IF }}
 
       - name: Store Container IPv4 address
-        run: echo "name=IPv4::$(sudo lxc exec test-container -- ip -o -4 addr show ${{ steps.test_container_interface.outputs.IF }} | awk '{print $4}' | cut -d/ -f1)" >> $GITHUB_OUTPUT
+        run: echo "::set-output name=IPv4::$(sudo lxc exec test-container -- ip -o -4 addr show ${{ steps.test_container_interface.outputs.IF }} | awk '{print $4}' | cut -d/ -f1)"
         id: test_container_ipv4
 
       - name: Output container network data
