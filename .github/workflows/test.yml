@@ -141,11 +141,11 @@ jobs:
         run: sudo lxc profile device add default root disk path=/ pool=container-pool
 
 
-      - name: Firewall IPv6
-        run: sudo lxc network set lxdbr0 ipv6.firewall false
+#      - name: Firewall IPv6
+#        run: sudo lxc network set lxdbr0 ipv6.firewall false
 
-      - name: Firewall IPv4
-        run: sudo lxc network set lxdbr0 ipv4.firewall false
+#      - name: Firewall IPv4
+#        run: sudo lxc network set lxdbr0 ipv4.firewall false
 
 
       # create an actual container, and configure it
