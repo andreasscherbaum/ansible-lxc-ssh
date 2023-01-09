@@ -87,7 +87,7 @@ jobs:
         if: ${{ matrix.guest == '20.04' }}
 
       - name: Install LXD (Ubuntu >= 22.x)
-        run: sudo apt-get install -y lxd-tools iptables
+        run: sudo apt-get install -y lxc-tools iptables
         if: ${{ matrix.guest != '20.04' }}
 
 
