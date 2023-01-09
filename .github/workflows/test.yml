@@ -157,7 +157,7 @@ jobs:
         run: sudo ufw route allow out on lxdbr0
 
       - name: Docker
-        run: sudo docker ls
+        run: sudo docker ps
 
 
       # create an actual container, and configure it
