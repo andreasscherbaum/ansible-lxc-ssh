@@ -147,6 +147,12 @@ jobs:
 #      - name: Firewall IPv4
 #        run: sudo lxc network set lxdbr0 ipv4.firewall false
 
+      - name: Firewall Zone
+        run: sudo firewall-cmd --zone=trusted --change-interface=lxdbr0 --permanent
+
+      - name: Firewall Zone reload
+        run: sudo firewall-cmd --reload
+
 
       # create an actual container, and configure it
       # Enable container nesting
