@@ -63,9 +63,9 @@ jobs:
           - os: ubuntu-22.04
             guest: 22.04
             ansible: "stable-2.14"
-          - os: ubuntu-latest
-            guest: 22.04
-            ansible: "stable-2.14"
+#          - os: ubuntu-latest
+#            guest: 22.04
+#            ansible: "stable-2.14"
 #          - os: ubuntu-latest
 #            guest: 22.04
 #            ansible: "devel"
@@ -173,8 +173,8 @@ jobs:
         run: exit 1
         if: steps.test_container_ipv4.outputs.IPv4 == ''
 
-#      - name: Ping test
-#        run: ping -4 -c 5 -n -v ${{ steps.test_container_ipv4.outputs.IPv4 }}
+      - name: Ping test
+        run: ping -4 -c 5 -n -v ${{ steps.test_container_ipv4.outputs.IPv4 }}
 
       - name: Add container to /etc/hosts
         run: ls -ld /etc/hosts
