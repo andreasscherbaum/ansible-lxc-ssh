@@ -33,43 +33,40 @@ jobs:
             guest: 20.04
             #guest-image: 20.04/amd64
             ansible: "stable-2.9"
-          - os: ubuntu-20.04
-            guest: 20.04
-            ansible: "stable-2.10"
-          - os: ubuntu-20.04
-            guest: 20.04
-            ansible: "stable-2.11"
-          - os: ubuntu-20.04
-            guest: 20.04
-            ansible: "stable-2.12"
-          - os: ubuntu-20.04
-            guest: 20.04
-            ansible: "stable-2.13"
+#          - os: ubuntu-20.04
+#            guest: 20.04
+#            ansible: "stable-2.10"
+#          - os: ubuntu-20.04
+#            guest: 20.04
+#            ansible: "stable-2.11"
+#          - os: ubuntu-20.04
+#            guest: 20.04
+#            ansible: "stable-2.12"
+#          - os: ubuntu-20.04
+#            guest: 20.04
+#            ansible: "stable-2.13"
+#          - os: ubuntu-22.04
+#            guest: 22.04
+#            ansible: "stable-2.9"
+#          - os: ubuntu-22.04
+#            guest: 22.04
+#            ansible: "stable-2.10"
+#          - os: ubuntu-22.04
+#            guest: 22.04
+#            ansible: "stable-2.11"
+#          - os: ubuntu-22.04
+#            guest: 22.04
+#            ansible: "stable-2.12"
+#          - os: ubuntu-22.04
+#            guest: 22.04
+#            ansible: "stable-2.13"
           - os: ubuntu-22.04
             guest: 22.04
-            ansible: "stable-2.9"
-          - os: ubuntu-22.04
-            guest: 22.04
-            ansible: "stable-2.10"
-          - os: ubuntu-22.04
-            guest: 22.04
-            ansible: "stable-2.11"
-          - os: ubuntu-22.04
-            guest: 22.04
-            ansible: "stable-2.12"
-          - os: ubuntu-22.04
-            guest: 22.04
-            ansible: "stable-2.13"
-          - os: ubuntu-22.04
-            guest: 22.04
+            ansible: "stable-2.14"
+          - os: ubuntu-latest
             ansible: "stable-2.14"
 #          - os: ubuntu-latest
-#            guest: 20.04
-#            guest-image: 20.04/amd64
-          - os: ubuntu-latest
-            ansible: "stable-2.14"
-          - os: ubuntu-latest
-            ansible: "devel"
+#            ansible: "devel"
 
     steps:
       - name: Checkout code
@@ -82,12 +79,15 @@ jobs:
 
 
       # prepare container with LXD installation
+      - name: Install basic packages
+        run: sudo apt-get install -y iptables
+
       - name: Install LXD (Ubuntu 20.x)
-        run: sudo apt-get install -y lxd lxd-client lxd-tools iptables
+        run: sudo apt-get install -y lxd lxd-client lxd-tools
         if: ${{ matrix.guest == '20.04' }}
 
       - name: Install LXD (Ubuntu >= 22.x)
-        run: sudo apt-get install -y lxc-tools iptables
+        run: sudo snap install lxd
         if: ${{ matrix.guest != '20.04' }}
 
 
