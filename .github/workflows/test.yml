@@ -109,7 +109,7 @@ jobs:
 
       - name: Fail for unknown newer versions
         run: exit 1
-        if: steps.lxd__major_version.outputs.LXD_Major_Version > 4
+        if: steps.lxd__major_version.outputs.LXD_Major_Version > 5
 
       - name: Init LXD version 3
         run: sudo lxd init --preseed < $GITHUB_WORKSPACE/.github/resources/lxd3-init.yml
@@ -117,7 +117,7 @@ jobs:
 
       - name: Init LXD version 4
         run: sudo lxd init --preseed < $GITHUB_WORKSPACE/.github/resources/lxd4-init.yml
-        if: steps.lxd__major_version.outputs.LXD_Major_Version == 4
+        if: steps.lxd__major_version.outputs.LXD_Major_Version >= 4
 
       - name: Show LXD status
         run: sudo lxc profile show default
