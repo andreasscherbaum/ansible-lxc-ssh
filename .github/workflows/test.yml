@@ -141,6 +141,13 @@ jobs:
         run: sudo lxc profile device add default root disk path=/ pool=container-pool
 
 
+      - name: Firewall IPv6
+        run: sudo lxc network set lxdbr0 ipv6.firewall false
+
+      - name: Firewall IPv4
+        run: sudo lxc network set lxdbr0 ipv4.firewall false
+
+
       # create an actual container, and configure it
       # Enable container nesting
       - name: Create container
@@ -226,8 +233,8 @@ jobs:
       - name: Network
         run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- ip route
 
-#      - name: Ping
-#        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- ping -c 5 8.8.8.8
+      - name: Ping
+        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- ping -c 5 8.8.8.8
 
       # https://unix.stackexchange.com/questions/604047/cannot-initiate-the-connection-to-archive-ubuntu-com80-200167c1360800124
       - name: Force IPv4
