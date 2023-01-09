@@ -213,7 +213,10 @@ jobs:
       # install OpenSSH in container
       # https://unix.stackexchange.com/questions/604047/cannot-initiate-the-connection-to-archive-ubuntu-com80-200167c1360800124
       - name: Force IPv4
-        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- sudo echo 'Acquire::ForceIPv4 "true";' > /etc/apt/apt.conf.d/99only-ipv4
+        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- ls -ld /etc/apt/apt.conf.d/
+
+      - name: Force IPv4
+        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- echo 'Acquire::ForceIPv4 "true";' > /etc/apt/apt.conf.d/99only-ipv4
 
       - name: Install OpenSSH in container
         run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- apt-get -y install -y openssh-client openssh-server openssh-sftp-server
