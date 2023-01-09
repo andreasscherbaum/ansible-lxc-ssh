@@ -33,42 +33,42 @@ jobs:
             guest: 20.04
             #guest-image: 20.04/amd64
             ansible: "stable-2.9"
-#          - os: ubuntu-20.04
-#            guest: 20.04
-#            ansible: "stable-2.10"
-#          - os: ubuntu-20.04
-#            guest: 20.04
-#            ansible: "stable-2.11"
-#          - os: ubuntu-20.04
-#            guest: 20.04
-#            ansible: "stable-2.12"
-#          - os: ubuntu-20.04
-#            guest: 20.04
-#            ansible: "stable-2.13"
-#          - os: ubuntu-22.04
-#            guest: 22.04
-#            ansible: "stable-2.9"
-#          - os: ubuntu-22.04
-#            guest: 22.04
-#            ansible: "stable-2.10"
-#          - os: ubuntu-22.04
-#            guest: 22.04
-#            ansible: "stable-2.11"
-#          - os: ubuntu-22.04
-#            guest: 22.04
-#            ansible: "stable-2.12"
-#          - os: ubuntu-22.04
-#            guest: 22.04
-#            ansible: "stable-2.13"
+          - os: ubuntu-20.04
+            guest: 20.04
+            ansible: "stable-2.10"
+          - os: ubuntu-20.04
+            guest: 20.04
+            ansible: "stable-2.11"
+          - os: ubuntu-20.04
+            guest: 20.04
+            ansible: "stable-2.12"
+          - os: ubuntu-20.04
+            guest: 20.04
+            ansible: "stable-2.13"
+          - os: ubuntu-22.04
+            guest: 22.04
+            ansible: "stable-2.9"
+          - os: ubuntu-22.04
+            guest: 22.04
+            ansible: "stable-2.10"
+          - os: ubuntu-22.04
+            guest: 22.04
+            ansible: "stable-2.11"
+          - os: ubuntu-22.04
+            guest: 22.04
+            ansible: "stable-2.12"
+          - os: ubuntu-22.04
+            guest: 22.04
+            ansible: "stable-2.13"
           - os: ubuntu-22.04
             guest: 22.04
             ansible: "stable-2.14"
-#          - os: ubuntu-latest
-#            guest: 22.04
-#            ansible: "stable-2.14"
-#          - os: ubuntu-latest
-#            guest: 22.04
-#            ansible: "devel"
+          - os: ubuntu-latest
+            guest: 22.04
+            ansible: "stable-2.14"
+          - os: ubuntu-latest
+            guest: 22.04
+            ansible: "devel"
 
     steps:
       - name: Checkout code
@@ -203,7 +203,7 @@ jobs:
         if: steps.test_container_ipv4.outputs.IPv4 == ''
 
       - name: Ping test
-        run: ping -4 -c 5 -n -v ${{ steps.test_container_ipv4.outputs.IPv4 }}
+        run: ping -4 -c 3 -n -v ${{ steps.test_container_ipv4.outputs.IPv4 }}
 
       - name: Add container to /etc/hosts
         run: ls -ld /etc/hosts
@@ -255,12 +255,6 @@ jobs:
       - name: Network
         run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- ip route
 
-#      - name: Ping
-#        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- ping -c 5 8.8.8.8
-
-      # https://unix.stackexchange.com/questions/604047/cannot-initiate-the-connection-to-archive-ubuntu-com80-200167c1360800124
-#      - name: Force IPv4
-#        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- echo 'Acquire::ForceIPv4 "true";' | sudo tee /etc/apt/apt.conf.d/99only-ipv4
 
       # install OpenSSH in container
       - name: Install OpenSSH in container
@@ -376,25 +370,13 @@ jobs:
       - name: Python3
         run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- apt-get -y install -y python3
 
-      # Install LXD inside container its missing inside container
+      # Install LXD inside container, it's missing inside container
       - name: Install LXD inside container (20.04)
         run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- sudo apt-get install -y lxd lxd-client lxd-tools iptables
         if: ${{ matrix.guest == '20.04' }}
 
-      - name: Install LXD inside container (>= 22.04)
-        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- sudo apt-cache search snap
-        if: ${{ matrix.guest != '20.04' }}
-
-      - name: Install LXD inside container (>= 22.04)
-        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- sudo apt-cache search lxd
-        if: ${{ matrix.guest != '20.04' }}
-
-      - name: Install LXD inside container (>= 22.04)
-        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- sudo apt-cache search lxc
-        if: ${{ matrix.guest != '20.04' }}
-
-      - name: Install LXD inside container (>= 22.04)
-        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- sudo apt-get -y install snapd
+      - name: Install Snap inside container (>= 22.04)
+        run: sudo lxc exec test-container --env DEBIAN_FRONTEND=noninteractive -- sudo apt-get -y install snapd iptables
         if: ${{ matrix.guest != '20.04' }}
 
       - name: Install LXD inside container (>= 22.04)
