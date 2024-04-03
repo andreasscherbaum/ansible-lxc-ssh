@@ -22,6 +22,7 @@ For LXC version 1 this means the SSH connection must login as `root`, otherwise
 For LXC version 2 this means that the user must either login as `root` or must be
 in the `lxc` group in order to execute the `lxc` command.
 
+If you are looking for Proxmox support, there's a fork: [ansible-pct-ssh](https://github.com/jbrubake/ansible-pct-ssh):
 
 ## Configuration
 
@@ -47,7 +48,6 @@ This is a fork from the original plugin:
 This fork incorporates a few PRs from the original version, which (April 2017) were never
 applied. It also works with LXC version 1 (using `lxc-*`) and LXC version 2 (just using
 a single `lxc` binary). The version is autodetected on runtime.
-
 
 ## How to create a container
 
