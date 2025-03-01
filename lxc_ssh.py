@@ -28,7 +28,6 @@ import errno
 import fcntl
 import hashlib
 import os
-import pipes
 import pty
 import selectors
 import shlex
@@ -1387,14 +1386,14 @@ class Connection(ConnectionBase):
         if self.lxc_version == 2:
             lxc_cmd = "%slxc exec %s --mode=non-interactive -- /bin/sh -c %s" % (
                 self.systemd_run_prefix,
-                pipes.quote(h),
-                pipes.quote(cmd),
+                shlex.quote(h),
+                shlex.quote(cmd),
             )
         elif self.lxc_version == 1:
             lxc_cmd = "%slxc-attach --name %s -- /bin/sh -c %s" % (
                 self.systemd_run_prefix,
-                pipes.quote(h),
-                pipes.quote(cmd),
+                shlex.quote(h),
+                shlex.quote(cmd),
             )
         if in_data:
             cmd = self._build_command(ssh_executable, "ssh", self.host, lxc_cmd)
@@ -1420,22 +1419,22 @@ class Connection(ConnectionBase):
                 if len(in_data) == 0:
                     # define a shortcut for empty files - nothing ro read so
                     # the ssh pipe will hang
-                    cmd = "touch %s; echo -n done" % pipes.quote(out_path)
+                    cmd = "touch %s; echo -n done" % shlex.quote(out_path)
                 else:
                     # regular command
-                    cmd = "cat > %s; echo -n done" % pipes.quote(out_path)
+                    cmd = "cat > %s; echo -n done" % shlex.quote(out_path)
                 h = self.container_name
                 if self.lxc_version == 2:
                     lxc_cmd = "%slxc exec %s --mode=non-interactive -- /bin/sh -c %s" % (
                         self.systemd_run_prefix,
-                        pipes.quote(h),
-                        pipes.quote(cmd),
+                        shlex.quote(h),
+                        shlex.quote(cmd),
                     )
                 elif self.lxc_version == 1:
                     lxc_cmd = "%slxc-attach --name %s -- /bin/sh -c %s" % (
                         self.systemd_run_prefix,
-                        pipes.quote(h),
-                        pipes.quote(cmd),
+                        shlex.quote(h),
+                        shlex.quote(cmd),
                     )
                 if in_data:
                     cmd = self._build_command(ssh_executable, "ssh", self.host, lxc_cmd)
@@ -1483,19 +1482,19 @@ class Connection(ConnectionBase):
         display.vvv("FETCH {0} TO {1}".format(in_path, out_path), host=self.host)
         ssh_executable = self.get_option("ssh_executable")
 
-        cmd = "cat < %s" % pipes.quote(in_path)
+        cmd = "cat < %s" % shlex.quote(in_path)
         h = self.container_name
         if self.lxc_version == 2:
             lxc_cmd = "%slxc exec %s --mode=non-interactive -- /bin/sh -c %s" % (
                 self.systemd_run_prefix,
-                pipes.quote(h),
-                pipes.quote(cmd),
+                shlex.quote(h),
+                shlex.quote(cmd),
             )
         elif self.lxc_version == 1:
             lxc_cmd = "%slxc-attach --name %s -- /bin/sh -c %s" % (
                 self.systemd_run_prefix,
-                pipes.quote(h),
-                pipes.quote(cmd),
+                shlex.quote(h),
+                shlex.quote(cmd),
             )
 
         cmd = self._build_command(ssh_executable, "ssh", self.host, lxc_cmd)
