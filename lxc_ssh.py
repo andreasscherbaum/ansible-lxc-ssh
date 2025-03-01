@@ -465,7 +465,7 @@ def _ssh_retry(func):
                     # 0 = success
                     # 1-254 = remote command return code
                     # 255 = failure from the ssh command itself
-                except (AnsibleControlPersistBrokenPipeError) as e:
+                except AnsibleControlPersistBrokenPipeError as e:
                     # Retry one more time because of the ControlPersist
                     # broken pipe (see #16731)
                     display.vvv("RETRYING BECAUSE OF CONTROLPERSIST BROKEN PIPE")
