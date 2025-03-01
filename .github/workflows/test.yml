@@ -1,7 +1,7 @@
 name: LXC ssh test
 
 # Run this workflow every time a new commit pushed to your repository
-on: 
+on:
   push:
     #branches: '**'
     #branches-ignore: 'main'
@@ -178,7 +178,7 @@ jobs:
       # create an actual container, and configure it
       # Enable container nesting
       - name: Create container
-        run: sudo lxc launch images:ubuntu/${{ matrix.guest }} test-container -c security.nesting=true
+        run: sudo lxc launch ubuntu:${{ matrix.guest }} test-container -c security.nesting=true
 
       - name: Wait for container to start
         run: sleep 10
@@ -425,7 +425,7 @@ jobs:
 
       # Create a nested container for lxc_ssh tests
       - name: Create a nested container
-        run: sudo lxc exec test-container -- sudo lxc launch images:ubuntu/${{ matrix.guest }} nested-container
+        run: sudo lxc exec test-container -- sudo lxc launch ubuntu:${{ matrix.guest }} nested-container
 
       - name: add container user to lxd group
         run: sudo lxc exec test-container -- sudo adduser ubuntu lxd
