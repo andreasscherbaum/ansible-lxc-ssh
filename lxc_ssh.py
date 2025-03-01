@@ -630,18 +630,11 @@ class Connection(ConnectionBase):
         list ['-o', 'Foo=1', '-o', 'Bar=foo bar'] that can be added to
         the argument list. The list will not contain any empty elements.
         """
-        if sys.version_info[0] >= 3:
-            return [
-                to_unicode(x.strip())
-                for x in shlex.split(to_bytes(argstring).decode())
-                if x.strip()
-            ]
-        else:
-            return [
-                to_unicode(x.strip())
-                for x in shlex.split(to_bytes(argstring))
-                if x.strip()
-            ]
+        return [
+            to_unicode(x.strip())
+            for x in shlex.split(to_bytes(argstring).decode())
+            if x.strip()
+        ]
 
     def _add_args(self, b_command, b_args, explanation):
         """
@@ -989,10 +982,7 @@ class Connection(ConnectionBase):
         if isinstance(cmd, (text_type, binary_type)):
             cmd = to_bytes(cmd)
         else:
-            if sys.version_info[0] >= 3:
-                cmd = list(map(to_bytes, cmd))
-            else:
-                cmd = map(to_bytes, cmd)
+            cmd = list(map(to_bytes, cmd))
 
         if not in_data:
             try:
@@ -1413,68 +1403,37 @@ class Connection(ConnectionBase):
                 "file or module does not exist: {0}".format(to_native(in_path))
             )
 
-        if sys.version_info[0] >= 3:
-            with open(in_path, "rb") as in_f:
-                in_data = in_f.read()
-                if len(in_data) == 0:
-                    # define a shortcut for empty files - nothing ro read so
-                    # the ssh pipe will hang
-                    cmd = "touch %s; echo -n done" % shlex.quote(out_path)
-                else:
-                    # regular command
-                    cmd = "cat > %s; echo -n done" % shlex.quote(out_path)
-                h = self.container_name
-                if self.lxc_version == 2:
-                    lxc_cmd = "%slxc exec %s --mode=non-interactive -- /bin/sh -c %s" % (
-                        self.systemd_run_prefix,
-                        shlex.quote(h),
-                        shlex.quote(cmd),
-                    )
-                elif self.lxc_version == 1:
-                    lxc_cmd = "%slxc-attach --name %s -- /bin/sh -c %s" % (
-                        self.systemd_run_prefix,
-                        shlex.quote(h),
-                        shlex.quote(cmd),
-                    )
-                if in_data:
-                    cmd = self._build_command(ssh_executable, "ssh", self.host, lxc_cmd)
-                else:
-                    cmd = self._build_command(
-                        ssh_executable, "ssh", "-tt", self.host, lxc_cmd
-                    )
-                (returncode, stdout, stderr) = self._run(cmd, in_data, sudoable=False)
-                return (returncode, stdout, stderr)
-        else:
-            with open(in_path, "r") as in_f:
-                in_data = in_f.read()
-                if len(in_data) == 0:
-                    # define a shortcut for empty files - nothing ro read so
-                    # the ssh pipe will hang
-                    cmd = "touch %s; echo -n done" % pipes.quote(out_path)
-                else:
-                    # regular command
-                    cmd = "cat > %s; echo -n done" % pipes.quote(out_path)
-                h = self.container_name
-                if self.lxc_version == 2:
-                    lxc_cmd = "%slxc exec %s --mode=non-interactive -- /bin/sh -c %s" % (
-                        self.systemd_run_prefix,
-                        pipes.quote(h),
-                        pipes.quote(cmd),
-                    )
-                elif self.lxc_version == 1:
-                    lxc_cmd = "%slxc-attach --name %s -- /bin/sh -c %s" % (
-                        self.systemd_run_prefix,
-                        pipes.quote(h),
-                        pipes.quote(cmd),
-                    )
-                if in_data:
-                    cmd = self._build_command(ssh_executable, "ssh", self.host, lxc_cmd)
-                else:
-                    cmd = self._build_command(
-                        ssh_executable, "ssh", "-tt", self.host, lxc_cmd
-                    )
-                (returncode, stdout, stderr) = self._run(cmd, in_data, sudoable=False)
-                return (returncode, stdout, stderr)
+        with open(in_path, "rb") as in_f:
+            in_data = in_f.read()
+            if len(in_data) == 0:
+                # define a shortcut for empty files - nothing ro read so
+                # the ssh pipe will hang
+                cmd = "touch %s; echo -n done" % shlex.quote(out_path)
+            else:
+                # regular command
+                cmd = "cat > %s; echo -n done" % shlex.quote(out_path)
+            h = self.container_name
+            if self.lxc_version == 2:
+                lxc_cmd = "%slxc exec %s --mode=non-interactive -- /bin/sh -c %s" % (
+                    self.systemd_run_prefix,
+                    shlex.quote(h),
+                    shlex.quote(cmd),
+                )
+            elif self.lxc_version == 1:
+                lxc_cmd = "%slxc-attach --name %s -- /bin/sh -c %s" % (
+                    self.systemd_run_prefix,
+                    shlex.quote(h),
+                    shlex.quote(cmd),
+                )
+            if in_data:
+                cmd = self._build_command(ssh_executable, "ssh", self.host, lxc_cmd)
+            else:
+                cmd = self._build_command(
+                    ssh_executable, "ssh", "-tt", self.host, lxc_cmd
+                )
+            (returncode, stdout, stderr) = self._run(cmd, in_data, sudoable=False)
+            return (returncode, stdout, stderr)
+
 
     def fetch_file(self, in_path, out_path):
         """fetch a file from lxc to local"""
@@ -1507,12 +1466,8 @@ class Connection(ConnectionBase):
                 )
             )
 
-        if sys.version_info[0] >= 3:
-            with open(out_path, "wb") as out_f:
-                out_f.write(stdout)
-        else:
-            with open(out_path, "w") as out_f:
-                out_f.write(stdout)
+        with open(out_path, "wb") as out_f:
+            out_f.write(stdout)
 
         return (returncode, stdout, stderr)
 
