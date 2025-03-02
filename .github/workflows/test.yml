@@ -305,6 +305,17 @@ jobs:
       - name: Set ubuntu user password in container
         run: sudo lxc exec test-container -- sh -c 'printf "password\npassword\n" | passwd ubuntu'
 
+      # default SSH config is `PermitRootLogin prohibit-password`, enable that
+      - name: Enable login for root
+        run: sudo lxc exec test-container -- sh -c 'sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin yes/" /etc/ssh/sshd_config'
+
+      # there's a `PasswordAuthentication no` in `/etc/ssh/sshd_config.d/50-cloud-init.conf`
+      - name: Enable password login
+        run: sudo lxc exec test-container -- sh -c 'sed -i "s/PasswordAuthentication no/PasswordAuthentication yes/" /etc/ssh/sshd_config.d/*'
+
+      - name: Reload OpenSSH
+        run: sudo lxc exec test-container -- systemctl reload sshd
+
       - name: Install sshpass on runner
         run: sudo apt-get -y install sshpass
 
