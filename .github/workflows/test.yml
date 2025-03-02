@@ -345,7 +345,7 @@ jobs:
         run: ssh -i $HOME/.ssh/id_ed25519 -o PreferredAuthentications=publickey -o PasswordAuthentication=no -l ubuntu ${{ steps.test_container_ipv4.outputs.IPv4 }} uptime
 
       - name: Test ssh connection into root user with password authentication
-        run: sshpass -p 'password' ssh -i /dev/null -l ubuntu ${{ steps.test_container_ipv4.outputs.IPv4 }} uptime
+        run: sshpass -p 'password' ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no -l ubuntu ${{ steps.test_container_ipv4.outputs.IPv4 }} uptime
 
 
       # copy logfiles from container into log
