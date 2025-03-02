@@ -292,7 +292,7 @@ jobs:
         run: sudo lxc exec test-container -- sudo bash -c "cat /tmp/authorized_keys.user >> /root/.ssh/authorized_keys"
 
       - name: Install authorized_keys for ubuntu user in container
-        run: sudo lxc exec test-container -- cp -ai /root/.ssh/authorized_keys /home/ubuntu/.ssh
+        run: sudo lxc exec test-container -- cp -af /root/.ssh/authorized_keys /home/ubuntu/.ssh
 
       - name: OpenSSH ownership of ubuntu .ssh directory in container
         run: sudo lxc exec test-container -- chown -R ubuntu. /home/ubuntu/.ssh
