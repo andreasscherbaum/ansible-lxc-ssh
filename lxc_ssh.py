@@ -41,7 +41,6 @@ from ansible.errors import (
     AnsibleConnectionFailure,
     AnsibleFileNotFound,
 )
-from ansible.module_utils.six import PY3, text_type, binary_type
 from ansible.module_utils._text import to_bytes, to_native, to_text
 from ansible.plugins.connection import ConnectionBase
 from ansible.utils.path import unfrackpath, makedirs_safe
@@ -969,7 +968,7 @@ class Connection(ConnectionBase):
 
         p = None
 
-        if isinstance(cmd, (text_type, binary_type)):
+        if isinstance(cmd, (str, bytes)):
             cmd = to_bytes(cmd)
         else:
             cmd = list(map(to_bytes, cmd))
@@ -978,7 +977,7 @@ class Connection(ConnectionBase):
             try:
                 # Make sure stdin is a proper pty to avoid tcgetattr errors
                 master, slave = pty.openpty()
-                if PY3 and self._play_context.password:
+                if self._play_context.password:
                     p = subprocess.Popen(
                         cmd,
                         stdin=slave,
@@ -999,7 +998,7 @@ class Connection(ConnectionBase):
                 p = None
 
         if not p:
-            if PY3 and self._play_context.password:
+            if self._play_context.password:
                 p = subprocess.Popen(
                     cmd,
                     stdin=subprocess.PIPE,
