@@ -1,7 +1,7 @@
 name: LXC ssh test
 
 # Run this workflow every time a new commit pushed to your repository
-on: 
+on:
   push:
     #branches: '**'
     #branches-ignore: 'main'
@@ -178,7 +178,7 @@ jobs:
       # create an actual container, and configure it
       # Enable container nesting
       - name: Create container
-        run: sudo lxc launch images:ubuntu/${{ matrix.guest }} test-container -c security.nesting=true
+        run: sudo lxc launch ubuntu:${{ matrix.guest }} test-container -c security.nesting=true
 
       - name: Wait for container to start
         run: sleep 10
@@ -292,7 +292,7 @@ jobs:
         run: sudo lxc exec test-container -- sudo bash -c "cat /tmp/authorized_keys.user >> /root/.ssh/authorized_keys"
 
       - name: Install authorized_keys for ubuntu user in container
-        run: sudo lxc exec test-container -- cp -ai /root/.ssh/authorized_keys /home/ubuntu/.ssh
+        run: sudo lxc exec test-container -- cp -af /root/.ssh/authorized_keys /home/ubuntu/.ssh
 
       - name: OpenSSH ownership of ubuntu .ssh directory in container
         run: sudo lxc exec test-container -- chown -R ubuntu. /home/ubuntu/.ssh
@@ -304,6 +304,17 @@ jobs:
 
       - name: Set ubuntu user password in container
         run: sudo lxc exec test-container -- sh -c 'printf "password\npassword\n" | passwd ubuntu'
+
+      # default SSH config is `PermitRootLogin prohibit-password`, enable that
+      - name: Enable login for root
+        run: sudo lxc exec test-container -- sh -c 'sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin yes/" /etc/ssh/sshd_config'
+
+      # there's a `PasswordAuthentication no` in `/etc/ssh/sshd_config.d/50-cloud-init.conf`
+      - name: Enable password login
+        run: sudo lxc exec test-container -- sh -c 'sed -i "s/PasswordAuthentication no/PasswordAuthentication yes/" /etc/ssh/sshd_config.d/*'
+
+      - name: Reload OpenSSH
+        run: sudo lxc exec test-container -- systemctl reload sshd
 
       - name: Install sshpass on runner
         run: sudo apt-get -y install sshpass
@@ -345,7 +356,7 @@ jobs:
         run: ssh -i $HOME/.ssh/id_ed25519 -o PreferredAuthentications=publickey -o PasswordAuthentication=no -l ubuntu ${{ steps.test_container_ipv4.outputs.IPv4 }} uptime
 
       - name: Test ssh connection into root user with password authentication
-        run: sshpass -p 'password' ssh -i /dev/null -l ubuntu ${{ steps.test_container_ipv4.outputs.IPv4 }} uptime
+        run: sshpass -p 'password' ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no -l root ${{ steps.test_container_ipv4.outputs.IPv4 }} uptime
 
 
       # copy logfiles from container into log
@@ -425,7 +436,7 @@ jobs:
 
       # Create a nested container for lxc_ssh tests
       - name: Create a nested container
-        run: sudo lxc exec test-container -- sudo lxc launch images:ubuntu/${{ matrix.guest }} nested-container
+        run: sudo lxc exec test-container -- sudo lxc launch ubuntu:${{ matrix.guest }} nested-container
 
       - name: add container user to lxd group
         run: sudo lxc exec test-container -- sudo adduser ubuntu lxd
