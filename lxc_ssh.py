@@ -35,27 +35,17 @@ import subprocess
 import sys
 import time
 
-from ansible.release import __version__ as ansible_version
 from functools import wraps
-from ansible import constants as C
 from ansible.errors import (
     AnsibleError,
     AnsibleConnectionFailure,
     AnsibleFileNotFound,
 )
-from ansible.errors import AnsibleOptionsError
 from ansible.module_utils.six import PY3, text_type, binary_type
-from ansible.module_utils.six.moves import shlex_quote
 from ansible.module_utils._text import to_bytes, to_native, to_text
-from ansible.module_utils.parsing.convert_bool import BOOLEANS, boolean
-from ansible.plugins.connection import ConnectionBase, BUFSIZE
+from ansible.plugins.connection import ConnectionBase
 from ansible.utils.path import unfrackpath, makedirs_safe
 
-from ansible.module_utils._text import (
-    to_bytes,
-    to_text as to_unicode,
-    to_native as to_str,
-)
 
 DOCUMENTATION = """
     name: lxc_ssh
@@ -464,7 +454,7 @@ def _ssh_retry(func):
                     # 0 = success
                     # 1-254 = remote command return code
                     # 255 = failure from the ssh command itself
-                except AnsibleControlPersistBrokenPipeError as e:
+                except AnsibleControlPersistBrokenPipeError:
                     # Retry one more time because of the ControlPersist
                     # broken pipe (see #16731)
                     display.vvv("RETRYING BECAUSE OF CONTROLPERSIST BROKEN PIPE")
@@ -631,7 +621,7 @@ class Connection(ConnectionBase):
         the argument list. The list will not contain any empty elements.
         """
         return [
-            to_unicode(x.strip())
+            to_text(x.strip())
             for x in shlex.split(to_bytes(argstring).decode())
             if x.strip()
         ]
@@ -969,7 +959,7 @@ class Connection(ConnectionBase):
         Starts the command and communicates with it until it ends.
         """
 
-        display_cmd = list(map(shlex_quote, map(to_text, cmd)))
+        display_cmd = list(map(shlex.quote, map(to_text, cmd)))
         display.vvv("SSH: EXEC {0}".format(" ".join(display_cmd)), host=self.host)
 
         # Start the given command. If we don't need to pipeline data, we can try
@@ -1433,7 +1423,6 @@ class Connection(ConnectionBase):
                 )
             (returncode, stdout, stderr) = self._run(cmd, in_data, sudoable=False)
             return (returncode, stdout, stderr)
-
 
     def fetch_file(self, in_path, out_path):
         """fetch a file from lxc to local"""
