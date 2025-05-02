@@ -205,26 +205,15 @@ jobs:
       - name: Debug
         run: sudo lxc exec test-container -- ip -4 -o link show
 
-      #- name: Install dhclient (Ubuntu 24.x)
-      #  run: sudo apt-get install -y isc-dhcp-client
-      #  #run: sudo apt-get -y install apt-file ; sudo apt-file update ; sudo apt-file search dhclient ; /bin/false
-      #  if: ${{ matrix.guest >= '24.04' }}
-
-      #- name: Install dhclient in container (Ubuntu 24.x)
-      #  run: sudo lxc exec test-container -- apt-get install -y isc-dhcp-client
-      #  if: ${{ matrix.guest >= '24.04' }}
-
-      #- name: Show dhclient
-      #  run: which dhclient ; ls -ld /sbin/dhclient* /usr/bin/dhclient* /usr/sbin/dhclient* ; /bin/false
-      #  #run: sudo apt-get -y install apt-file ; sudo apt-file update ; sudo apt-file search dhclient ; /bin/false
-      #  #if: ${{ matrix.guest >= '24.04' }}
-
       - name: Store Container interface name
         run: echo "IF=$(sudo lxc exec test-container -- ip -4 -o link show | awk '{print $2}' | cut -f1 -d':' | cut -f1 -d'@' | grep '^e[tn]')" >> $GITHUB_OUTPUT
         id: test_container_interface
 
       - name: Request and wait for IPv4 address
         run: sudo lxc exec test-container -- /usr/sbin/dhclient -v ${{ steps.test_container_interface.outputs.IF }}
+        # apparently this is working out of the box in 24.04
+        # also no need to install dhclient anymore
+        # in earlier versions the network address from LXC was not readily available
         if: ${{ matrix.guest < '24.04' }}
 
       - name: Store Container IPv4 address
@@ -343,6 +332,9 @@ jobs:
       # there's a `PasswordAuthentication no` in `/etc/ssh/sshd_config.d/50-cloud-init.conf`
       - name: Enable password login
         run: sudo lxc exec test-container -- sh -c 'sed -i "s/PasswordAuthentication no/PasswordAuthentication yes/" /etc/ssh/sshd_config.d/*'
+
+      - name: Reload OpenSSH
+        run: sudo lxc exec test-container -- systemctl list-units | grep ssh
 
       - name: Reload OpenSSH
         run: sudo lxc exec test-container -- systemctl reload sshd
