@@ -29,24 +29,22 @@ jobs:
         # build the matrix manually - not all versions of Ubuntu can do with all Ansible versions,
         # mostly because the Python version is outdated (20.04 only has Python 3.8)
         # maybe in the future this can be build with include/exclude
-        #os: [ubuntu-20.04, ubuntu-22.04, ubuntu-latest]
-        #ansible: ["stable-2.9", "stable-2.10", "stable-2.11", "stable-2.12", "stable-2.13", "stable-2.14"]
         include:
-#          - os: ubuntu-22.04
-#            guest: 22.04
-#            ansible: "stable-2.9"
-#          - os: ubuntu-22.04
-#            guest: 22.04
-#            ansible: "stable-2.10"
-#          - os: ubuntu-22.04
-#            guest: 22.04
-#            ansible: "stable-2.11"
-#          - os: ubuntu-22.04
-#            guest: 22.04
-#            ansible: "stable-2.12"
-#          - os: ubuntu-22.04
-#            guest: 22.04
-#            ansible: "stable-2.13"
+          - os: ubuntu-22.04
+            guest: 22.04
+            ansible: "stable-2.9"
+          - os: ubuntu-22.04
+            guest: 22.04
+            ansible: "stable-2.10"
+          - os: ubuntu-22.04
+            guest: 22.04
+            ansible: "stable-2.11"
+          - os: ubuntu-22.04
+            guest: 22.04
+            ansible: "stable-2.12"
+          - os: ubuntu-22.04
+            guest: 22.04
+            ansible: "stable-2.13"
           - os: ubuntu-22.04
             guest: 22.04
             ansible: "stable-2.14"
