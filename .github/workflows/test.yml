@@ -210,6 +210,10 @@ jobs:
         #run: sudo apt-get -y install apt-file ; sudo apt-file update ; sudo apt-file search dhclient ; /bin/false
         if: ${{ matrix.guest >= '24.04' }}
 
+      - name: Install dhclient in container (Ubuntu 24.x)
+        run: sudo lxc exec test-container -- apt-get install -y isc-dhcp-client
+        if: ${{ matrix.guest >= '24.04' }}
+
       #- name: Show dhclient
       #  run: which dhclient ; ls -ld /sbin/dhclient* /usr/bin/dhclient* /usr/sbin/dhclient* ; /bin/false
       #  #run: sudo apt-get -y install apt-file ; sudo apt-file update ; sudo apt-file search dhclient ; /bin/false
