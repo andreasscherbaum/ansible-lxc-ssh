@@ -53,15 +53,6 @@ jobs:
 
           - os: ubuntu-24.04
             guest: 24.04
-            ansible: "stable-2.10"
-          - os: ubuntu-24.04
-            guest: 24.04
-            ansible: "stable-2.11"
-          - os: ubuntu-24.04
-            guest: 24.04
-            ansible: "stable-2.12"
-          - os: ubuntu-24.04
-            guest: 24.04
             ansible: "stable-2.13"
           - os: ubuntu-24.04
             guest: 24.04
