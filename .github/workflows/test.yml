@@ -207,7 +207,7 @@ jobs:
 
       - name: Install dhclient (Ubuntu 24.x)
         #run: sudo apt-get install -y dhclient
-        run: apt-get -y install apt-file ; apt-file update ; apt-file search dhclient ; /bin/false
+        run: sudo apt-get -y install apt-file ; sudo apt-file update ; sudo apt-file search dhclient ; /bin/false
         if: ${{ matrix.guest >= '24.04' }}
 
       - name: Store Container interface name
