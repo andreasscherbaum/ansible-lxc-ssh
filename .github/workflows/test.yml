@@ -47,9 +47,9 @@ jobs:
 #          - os: ubuntu-22.04
 #            guest: 22.04
 #            ansible: "stable-2.13"
-#          - os: ubuntu-22.04
-#            guest: 22.04
-#            ansible: "stable-2.14"
+          - os: ubuntu-22.04
+            guest: 22.04
+            ansible: "stable-2.14"
 
           - os: ubuntu-24.04
             guest: 24.04
@@ -209,6 +209,11 @@ jobs:
         run: sudo apt-get install -y isc-dhcp-client
         #run: sudo apt-get -y install apt-file ; sudo apt-file update ; sudo apt-file search dhclient ; /bin/false
         if: ${{ matrix.guest >= '24.04' }}
+
+      - name: Show dhclient
+        run: which dhclient ; ls -ld /sbin/dhclient* /usr/bin/dhclient* /usr/sbin/dhclient* ; /bin/false
+        #run: sudo apt-get -y install apt-file ; sudo apt-file update ; sudo apt-file search dhclient ; /bin/false
+        #if: ${{ matrix.guest >= '24.04' }}
 
       - name: Store Container interface name
         run: echo "IF=$(sudo lxc exec test-container -- ip -4 -o link show | awk '{print $2}' | cut -f1 -d':' | cut -f1 -d'@' | grep '^e[tn]')" >> $GITHUB_OUTPUT
