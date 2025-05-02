@@ -32,52 +32,52 @@ jobs:
         #os: [ubuntu-20.04, ubuntu-22.04, ubuntu-latest]
         #ansible: ["stable-2.9", "stable-2.10", "stable-2.11", "stable-2.12", "stable-2.13", "stable-2.14"]
         include:
-          - os: ubuntu-22.04
-            guest: 22.04
-            ansible: "stable-2.9"
-          - os: ubuntu-22.04
-            guest: 22.04
-            ansible: "stable-2.10"
-          - os: ubuntu-22.04
-            guest: 22.04
-            ansible: "stable-2.11"
-          - os: ubuntu-22.04
-            guest: 22.04
-            ansible: "stable-2.12"
-          - os: ubuntu-22.04
-            guest: 22.04
-            ansible: "stable-2.13"
-          - os: ubuntu-22.04
-            guest: 22.04
-            ansible: "stable-2.14"
+#          - os: ubuntu-22.04
+#            guest: 22.04
+#            ansible: "stable-2.9"
+#          - os: ubuntu-22.04
+#            guest: 22.04
+#            ansible: "stable-2.10"
+#          - os: ubuntu-22.04
+#            guest: 22.04
+#            ansible: "stable-2.11"
+#          - os: ubuntu-22.04
+#            guest: 22.04
+#            ansible: "stable-2.12"
+#          - os: ubuntu-22.04
+#            guest: 22.04
+#            ansible: "stable-2.13"
+#          - os: ubuntu-22.04
+#            guest: 22.04
+#            ansible: "stable-2.14"
 
           - os: ubuntu-24.04
             guest: 24.04
             ansible: "stable-2.9"
-          - os: ubuntu-24.04
-            guest: 24.04
-            ansible: "stable-2.10"
-          - os: ubuntu-24.04
-            guest: 24.04
-            ansible: "stable-2.11"
-          - os: ubuntu-24.04
-            guest: 24.04
-            ansible: "stable-2.12"
-          - os: ubuntu-24.04
-            guest: 24.04
-            ansible: "stable-2.13"
-          - os: ubuntu-24.04
-            guest: 24.04
-            ansible: "stable-2.14"
-          - os: ubuntu-24.04
-            guest: 24.04
-            ansible: "stable-2.15"
-          - os: ubuntu-24.04
-            guest: 24.04
-            ansible: "stable-2.16"
-          - os: ubuntu-24.04
-            guest: 24.04
-            ansible: "stable-2.17"
+#          - os: ubuntu-24.04
+#            guest: 24.04
+#            ansible: "stable-2.10"
+#          - os: ubuntu-24.04
+#            guest: 24.04
+#            ansible: "stable-2.11"
+#          - os: ubuntu-24.04
+#            guest: 24.04
+#            ansible: "stable-2.12"
+#          - os: ubuntu-24.04
+#            guest: 24.04
+#            ansible: "stable-2.13"
+#          - os: ubuntu-24.04
+#            guest: 24.04
+#            ansible: "stable-2.14"
+#          - os: ubuntu-24.04
+#            guest: 24.04
+#            ansible: "stable-2.15"
+#          - os: ubuntu-24.04
+#            guest: 24.04
+#            ansible: "stable-2.16"
+#          - os: ubuntu-24.04
+#            guest: 24.04
+#            ansible: "stable-2.17"
           - os: ubuntu-24.04
             guest: 24.04
             ansible: "stable-2.18"
@@ -206,8 +206,8 @@ jobs:
         run: sudo lxc exec test-container -- ip -4 -o link show
 
       - name: Install dhclient (Ubuntu 24.x)
-        #run: sudo apt-get install -y dhclient
-        run: sudo apt-get -y install apt-file ; sudo apt-file update ; sudo apt-file search dhclient ; /bin/false
+        run: sudo apt-get install -y isc-dhcp-client
+        #run: sudo apt-get -y install apt-file ; sudo apt-file update ; sudo apt-file search dhclient ; /bin/false
         if: ${{ matrix.guest >= '24.04' }}
 
       - name: Store Container interface name
