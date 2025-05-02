@@ -215,7 +215,7 @@ jobs:
         id: test_container_interface
 
       - name: Request and wait for IPv4 address
-        run: sudo lxc exec test-container -- dhclient -v ${{ steps.test_container_interface.outputs.IF }}
+        run: sudo lxc exec test-container -- /sbin/dhclient -v ${{ steps.test_container_interface.outputs.IF }}
 
       - name: Store Container IPv4 address
         run: echo "IPv4=$(sudo lxc exec test-container -- ip -o -4 addr show ${{ steps.test_container_interface.outputs.IF }} | awk '{print $4}' | cut -d/ -f1)" >> $GITHUB_OUTPUT
